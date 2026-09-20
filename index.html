@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>할까 말까?</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg1: #eef2ff;
+  --bg2: #f8fafc;
+  --card: rgba(255,255,255,.92);
+  --text: #111827;
+  --sub: #64748b;
+  --button: #111827;
+  --buttonText: #fff;
+  --shadow: rgba(15,23,42,.12);
+  --toggle: #e2e8f0;
+}
+
+body.dark {
+  --bg1: #0f172a;
+  --bg2: #020617;
+  --card: rgba(15,23,42,.94);
+  --text: #f8fafc;
+  --sub: #94a3b8;
+  --button: #f8fafc;
+  --buttonText: #0f172a;
+  --shadow: rgba(0,0,0,.35);
+  --toggle: #334155;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, "Noto Sans KR", sans-serif;
+  color: var(--text);
+  background: linear-gradient(135deg, var(--bg1), var(--bg2));
+  transition: background .35s, color .35s;
+}
+
+.card {
+  position: relative;
+  width: min(92%, 500px);
+  padding: 42px 32px;
+  text-align: center;
+  background: var(--card);
+  border-radius: 28px;
+  box-shadow: 0 20px 60px var(--shadow);
+  backdrop-filter: blur(12px);
+}
+
+.theme {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  border: 0;
+  border-radius: 999px;
+  width: 46px;
+  height: 46px;
+  cursor: pointer;
+  background: var(--toggle);
+  font-size: 20px;
+  transition: transform .2s;
+}
+
+.theme:hover {
+  transform: rotate(15deg) scale(1.05);
+}
+
+h1 {
+  margin: 0 0 10px;
+  font-size: 42px;
+}
+
+.sub {
+  margin: 0 0 30px;
+  color: var(--sub);
+  font-size: 16px;
+}
+
+.result {
+  min-height: 125px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 43px;
+  font-weight: 800;
+  margin: 10px 0 30px;
+}
+
+.result.pop {
+  animation: pop .55s ease;
+}
+
+button.decide {
+  border: 0;
+  border-radius: 16px;
+  padding: 16px 30px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--buttonText);
+  background: var(--button);
+  traGitHub에서 **Add file → Create new file → ****`index.html`** 입력nsition: transform .15s, box-shadow .15s;
+  box-shadow: 0 8px 20px var(--shadow);
+}
+
+button.decide:hover {
+  transform: translateY(-2px);
+}
+
+button.decide:active {
+  transform: scale(.96);
+}
+
+button:disabled {
+  opacity: .7;
+  cursor: default;
+}
+
+.hint {
+  margin-top: 18px;
+  font-size: 13px;
+  color: var(--sub);
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(.7) rotate(-4deg);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.12) rotate(2deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0) rotate(0);
+  }
+
+  25% {
+    transform: translateX(-7px) rotate(-1deg);
+  }
+
+  75% {
+    transform: translateX(7px) rotate(1deg);
+  }
+}
+
+.rolling {
+  animation: shake .12s infinite;
+}
+</style>
+
+</head>
+
+<body>
+
+<main class="card">
+
+  <button class="theme" id="theme" aria-label="테마 변경">
+    🌙
+  </button>
+
+  <h1>할까 말까? 🤔</h1>
+
+  <p class="sub">
+    너 고민은 여기서 끝이야...
+  </p>
+
+  <div id="result" class="result">
+    ?
+  </div>
+
+  <button class="decide" id="decide">
+    결정하기
+  </button>
+
+  <div class="hint">
+    버튼을 누르면 운명이 결정됩니다.
+  </div>
+
+</main>
+
+<script>
+
+const choices = [
+  "해라",
+  "하지 마라",
+  "일단 해봐",
+  "오늘은 미뤄라",
+  "내일 해라",
+  "지금은 아니다",
+  "그냥 해버려",
+  "조금 더 고민해라",
+  "가볍게 시작해봐",
+  "이번엔 패스",
+  "한번 질러봐",
+  "잠깐 쉬어",
+  "기회가 왔다",
+  "다음에 해라",
+  "직감대로 가라",
+  "신중하게 결정해라",
+  "오늘은 쉬자",
+  "지금 바로 해",
+  "친구에게 물어봐",
+  "운명에 맡겨라"
+];
+
+const result = document.getElementById("result");
+const decide = document.getElementById("decide");
+const theme = document.getElementById("theme");
+
+decide.addEventListener("click", () => {
+
+  decide.disabled = true;
+
+  result.classList.remove("pop");
+  result.classList.add("rolling");
+
+  let count = 0;
+
+  const timer = setInterval(() => {
+
+    result.textContent =
+      choices[Math.floor(Math.random() * choices.length)];
+
+    count++;
+
+    if (count >= 22) {
+
+      clearInterval(timer);
+
+      result.textContent =
+        choices[Math.floor(Math.random() * choices.length)];
+
+      result.classList.remove("rolling");
+
+      void result.offsetWidth;
+
+      result.classList.add("pop");
+
+      decide.disabled = false;
+    }
+
+  }, 85);
+
+});
+
+theme.addEventListener("click", () => {
+
+  document.body.classList.toggle("dark");
+
+  const dark =
+    document.body.classList.contains("dark");
+
+  theme.textContent = dark ? "☀️" : "🌙";
+
+  localStorage.setItem(
+    "theme",
+    dark ? "dark" : "light"
+  );
+
+});
+
+if (localStorage.getItem("theme") === "dark") {
+
+  document.body.classList.add("dark");
+
+  theme.textContent = "☀️";
+
+}
+
+</script>
+
+</body>
+</html>
